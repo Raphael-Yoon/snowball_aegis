@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:/Python/snowball\" status --short)",
+      "Bash(git -C \"C:/Python/snowball\" ls-files --others --exclude-standard)",
+      "Bash(git -C:*)",
+      "Bash(powershell -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git ls-files 2>&1 | Select-Object -First 60\")",
+      "Bash(powershell -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git ls-files 2>&1\")",
+      "Bash(powershell -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git ls-files\")",
+      "Bash(powershell -NoProfile -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git status --porcelain\")",
+      "Bash(powershell -NoProfile -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git ls-files --others --exclude-standard\")",
+      "Bash(powershell -NoProfile -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git diff --name-only HEAD\")",
+      "Bash(powershell -NoProfile -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git ls-files --ignored --exclude-standard --others | Select-Object -First 30\")",
+      "Bash(powershell -NoProfile -Command \"Set-Location ''C:\\\\Python\\\\snowball''; git check-ignore -v ''deploy.sh'' ''CLAUDE.md''\")"
+    ]
+  }
+}

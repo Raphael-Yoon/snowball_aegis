@@ -1,0 +1,503 @@
+/* 공통 변수 */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --text-color: #333;
+    --light-bg: #f8f9fa;
+    --border-color: #e0e0e0;
+    --hover-color: #f1f3f4;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 기본 스타일 */
+body {
+    background-color: var(--light-bg) !important;
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 20% !important;
+    max-width: 20% !important;
+    min-width: 180px;
+    min-height: calc(100vh - 56px);
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-right: 1px solid #dee2e6;
+}
+
+.content-area {
+    width: 80% !important;
+    max-width: 80% !important;
+    padding: 20px;
+}
+
+/* 동적 크기 조정을 위한 추가 스타일 */
+@media (min-width: 769px) {
+    .content-area {
+        width: calc(100vw - 300px);
+        max-width: 80vw;
+        min-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-area {
+        width: calc(100vw - 250px);
+        max-width: 85vw;
+    }
+}
+
+.nav-link {
+    color: #495057;
+    padding: 6px 12px;
+    margin: 2px 0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover {
+    background-color: #e9ecef;
+}
+
+.nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.category-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 15px 0 8px 0;
+    color: #212529;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.category-title:hover {
+    background-color: #e9ecef;
+}
+
+.category-title i {
+    transition: transform 0.3s ease;
+}
+
+.category-title.collapsed i {
+    transform: rotate(-90deg);
+}
+
+.nav {
+    margin-left: -4px;
+}
+
+/* 카드 스타일 */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.card-img-top {
+    max-height: 400px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    padding: 0.8rem;
+}
+
+.ratio-16x9 {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+/* 메인 페이지용 컨테이너 */
+.main-container {
+    max-width: 90%;
+}
+
+/* 기존 Bootstrap container는 유지 */
+.container:not(.processing-container) {
+    max-width: 90%;
+}
+
+/* 폼 스타일 */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* .section-title은 style.css에서 통합 정의됨 */
+.section-title i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #34495e;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* 라디오 버튼 스타일 */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.radio-option {
+    position: relative;
+    flex: 1;
+    min-width: 120px;
+}
+
+.radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-option label {
+    display: block;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked+label {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.radio-option label:hover {
+    background-color: #e9ecef;
+}
+
+.radio-option input[type="radio"]:checked+label:hover {
+    background-color: #2980b9;
+}
+
+/* 버튼 스타일 */
+.submit-btn {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 2rem auto 0;
+    padding: 0.75rem 1.5rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.submit-btn i {
+    margin-right: 0.5rem;
+}
+
+/* 버튼 호버 효과 */
+.btn-success:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(33, 136, 56, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3 !important;
+    border-color: #004085 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+/* 네비게이션 바 스타일 */
+/* 드롭다운 서브메뉴 스타일 */
+.dropdown-menu .dropdown-menu {
+    left: 100%;
+    top: 0;
+    margin-left: 0.125rem;
+}
+
+.dropend .dropdown-toggle::after {
+    margin-left: auto;
+}
+
+/* navbar가 모달을 가리지 않도록 z-index 낮춤 */
+.navbar {
+    z-index: 1030 !important;
+}
+
+/* 드롭다운 메뉴 z-index */
+.dropdown-menu {
+    z-index: 1040 !important;
+}
+
+/* 고정된 navbar로 인해 컨텐츠가 가려지지 않도록 body에 padding 추가 */
+body {
+    padding-top: 70px;
+}
+
+/* 드롭다운 토글 클릭 가능하도록 */
+.nav-link.dropdown-toggle {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* 네비게이션 바 드롭다운 링크 스타일 오버라이드 */
+.navbar .nav-link {
+    padding: 0.5rem 0.8rem !important;
+}
+
+.navbar .dropdown-menu {
+    display: none;
+}
+
+.navbar .dropdown-menu.show {
+    display: block;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .sidebar {
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .content-area {
+        padding: 15px;
+    }
+
+    .form-container {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .radio-group {
+        flex-direction: column;
+    }
+
+    .radio-option {
+        width: 100%;
+    }
+}
+
+/* ================================================================
+   다크 모드 (Bootstrap 5.3 data-bs-theme="dark" 기반)
+   Bootstrap 컴포넌트(card, form, modal 등)는 자동 처리됨
+   아래는 커스텀 클래스 전용 오버라이드
+================================================================ */
+[data-bs-theme="dark"] body {
+    background-color: #13151a !important;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .sidebar {
+    background-color: #1c1f26;
+    border-color: #3a3f4b;
+}
+
+[data-bs-theme="dark"] .category-title {
+    background-color: #252930;
+    color: #dee2e6;
+    border-color: #3a3f4b;
+}
+
+[data-bs-theme="dark"] .category-title:hover {
+    background-color: #2e333d;
+}
+
+[data-bs-theme="dark"] .nav-link {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .nav-link:hover {
+    background-color: #2e333d;
+    color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .form-control {
+    background-color: #252930;
+    border-color: #3a3f4b;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #2e333d;
+    border-color: #6ea8fe;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .form-control:disabled,
+[data-bs-theme="dark"] .form-control[readonly] {
+    background-color: #1c1f26;
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .form-select {
+    background-color: #252930;
+    border-color: #3a3f4b;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #2e333d;
+    border-color: #6ea8fe;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .form-select:disabled {
+    background-color: #1c1f26;
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] .bg-light {
+    background-color: #252930 !important;
+}
+
+/* 커스텀 안내 박스 (alert-info 대체) */
+.alert-guide-info {
+    background-color: #f0f9ff !important;
+    border: 1px solid #bae6fd !important;
+    color: #0369a1 !important;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.alert-guide-info i {
+    margin-right: 0.4rem;
+    font-size: 1rem;
+}
+
+[data-bs-theme="dark"] .alert-guide-info {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #7dd3fc !important;
+    --bs-alert-bg: #1e293b;
+    --bs-alert-border-color: #334155;
+    --bs-alert-color: #7dd3fc;
+}
+
+[data-bs-theme="dark"] .table-light th,
+[data-bs-theme="dark"] .table-light td,
+[data-bs-theme="dark"] thead.table-light {
+    background-color: #252930 !important;
+    color: #dee2e6;
+    border-color: #3a3f4b;
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .radio-option label {
+    background-color: #252930;
+    border-color: #3a3f4b;
+    color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .radio-option label:hover {
+    background-color: #2e333d;
+}
+
+[data-bs-theme="dark"] .section-title i {
+    color: #6ea8fe;
+}
+
+/* 다크모드 토글 버튼 */
+#themeToggle {
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 50%;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+#themeToggle:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+/* 검토/리뷰 세션 전용 헤더 */
+.bg-review {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+}
+
+[data-bs-theme="dark"] .bg-review {
+    background-color: #332701 !important;
+    color: #ffda6a !important;
+    border-bottom: 1px solid #4d3d02;
+}
+
+.card-header.bg-review {
+    border-bottom: none;
+}

@@ -1,0 +1,31 @@
+# IDE / editor
+.vscode/
+
+# etc
+*.env
+*.pickle
+credentials.json
+*.pyc
+downloads/
+uploads/
+progress_data/
+.DS_Store
+logs/
+tmpclaude-*
+deploy.sh
+
+# Database files
+*.db
+*.db-journal
+*.db.backup*
+
+# Python cache
+__pycache__/
+*.pyo
+
+# Test artifacts
+test/screenshots/
+tests/htmlcov/
+htmlcov/
+.coverage
+.pytest_cache/
