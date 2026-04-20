@@ -52,54 +52,12 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-excel fa-3x text-info mb-3"></i>
-                        <h5 class="card-title">RCM 관리</h5>
-                        <p class="card-text">회사별 RCM 업로드 및 관리를 수행합니다.</p>
-                        <a href="/admin/rcm" class="btn btn-info">
-                            <i class="fas fa-upload me-1"></i>RCM 관리
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-clipboard-check fa-3x text-warning mb-3"></i>
-                        <h5 class="card-title">기준통제 관리</h5>
-                        <p class="card-text">ITGC 기준통제 및 Attribute 템플릿을 관리합니다.</p>
-                        <a href="/admin/standard-controls" class="btn btn-warning">
-                            <i class="fas fa-cog me-1"></i>기준통제 관리
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-book fa-3x text-secondary mb-3"></i>
-                        <h5 class="card-title">작업 로그 관리</h5>
-                        <p class="card-text">Google Sheets와 연동된 작업 로그를 관리합니다.</p>
-                        <a href="/admin/work-log" class="btn btn-secondary">
-                            <i class="fas fa-book me-1"></i>작업 로그
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <!-- 사용자 및 로그 관리만 유지 -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
-                    <strong>안내:</strong> 관리자 권한으로 로그인하셨습니다. 시스템 관리 기능을 신중하게 사용해주세요.
+                    <strong>안내:</strong> Aegis 모니터링 시스템 관리 모드입니다. 사용자 및 활동 로그 관리가 가능합니다.
                 </div>
             </div>
         </div>
