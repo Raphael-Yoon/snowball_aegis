@@ -141,8 +141,13 @@ def login_required(f):
 def admin_required(f):
     @wraps(f)
     def dec(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('관리자 로그인이 필요합니다.', 'error')
+            return redirect(url_for('login'))
         user = get_current_user()
-        if not user or user.get('admin_flag') != 'Y': return "Forbidden", 403
+        if not user or user.get('admin_flag') != 'Y':
+            flash('관리자 권한이 없습니다.', 'error')
+            return redirect(url_for('login'))
         return f(*args, **kwargs)
     return dec
 

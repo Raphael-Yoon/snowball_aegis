@@ -11,9 +11,15 @@ def get_user_info():
 
 
 def _enrich_system(s: dict) -> dict:
-    """시스템 dict에 커넥터 구현 완료 여부 정보 추가"""
+    """시스템 dict에 커넥터 구현 완료 여부 및 매핑된 통제 수 추가"""
     info = get_connector_info(s.get('system_code', ''))
-    return {**s, **info}
+    with get_db() as conn:
+        row = conn.execute(
+            'SELECT COUNT(*) as cnt FROM aegis_control_system WHERE system_id = ? AND is_active = ?',
+            (s['system_id'], 'Y')
+        ).fetchone()
+    mapped_count = dict(row)['cnt'] if row else 0
+    return {**s, **info, 'mapped_control_count': mapped_count}
 
 
 @bp_aegis_systems.route('/aegis/systems')
@@ -151,9 +157,17 @@ def api_system_test(system_id):
         if s['db_type'] == 'sqlite':
             import sqlite3
             from pathlib import Path
-            db_path = Path(s['db_path']) if s.get('db_path') else None
-            if not db_path or not db_path.exists():
-                return jsonify({'success': False, 'message': f"DB 파일을 찾을 수 없습니다: {s.get('db_path')}"})
+            import flask
+            raw_path = s.get('db_path') or ''
+            if not raw_path:
+                return jsonify({'success': False, 'message': 'DB 파일 경로가 설정되지 않았습니다.'})
+            db_path = Path(raw_path)
+            # 상대 경로인 경우 Flask 앱 루트 기준으로 resolve
+            if not db_path.is_absolute():
+                app_root = Path(flask.current_app.root_path)
+                db_path = (app_root / db_path).resolve()
+            if not db_path.exists():
+                return jsonify({'success': False, 'message': f"DB 파일을 찾을 수 없습니다: {db_path}"})
             test_conn = sqlite3.connect(str(db_path))
             test_conn.execute('SELECT 1')
             test_conn.close()

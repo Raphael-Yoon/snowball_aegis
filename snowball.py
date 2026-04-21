@@ -22,7 +22,7 @@ from aegis_systems import bp_aegis_systems
 from aegis_controls import bp_aegis_controls
 from aegis_monitor import bp_aegis_monitor
 from snowball_admin import admin_bp
-from auth import send_otp, verify_otp, get_current_user, find_user_by_email
+from auth import send_otp, verify_otp, get_current_user, find_user_by_email, get_db
 
 app = Flask(__name__)
 
@@ -96,7 +96,31 @@ def login():
     try:
         action = request.form.get('action') if request.method == 'POST' else None
 
-        if action == 'send_otp':
+        if action == 'admin_login':
+            with get_db() as conn:
+                user = conn.execute(
+                    'SELECT * FROM sb_user WHERE user_email = ? AND (effective_end_date IS NULL OR effective_end_date > CURRENT_TIMESTAMP)',
+                    ('snowball2727@naver.com',)
+                ).fetchone()
+
+                if user:
+                    user_dict = dict(user)
+                    session['user_id'] = user_dict['user_id']
+                    session['user_name'] = user_dict['user_name']
+                    session['user_info'] = {
+                        'user_id': user_dict['user_id'],
+                        'user_name': user_dict['user_name'],
+                        'user_email': user_dict['user_email'],
+                        'company_name': user_dict.get('company_name', ''),
+                        'phone_number': user_dict.get('phone_number', ''),
+                        'admin_flag': user_dict.get('admin_flag', 'N')
+                    }
+                    session['last_activity'] = datetime.now().isoformat()
+                    return redirect(url_for('admin.admin'))
+                else:
+                    return render_template('login.jsp', error="관리자 계정을 찾을 수 없습니다.", remote_addr=request.remote_addr)
+
+        elif action == 'send_otp':
             email = request.form.get('email')
             if not email:
                 return render_template('login.jsp', error="이메일을 입력해주세요.", remote_addr=request.remote_addr)

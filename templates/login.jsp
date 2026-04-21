@@ -54,6 +54,11 @@
                     <a href="/" class="back-button">← 메인으로</a>
                     <h2>로그인</h2>
                 </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="{{ 'error-message' if category == 'error' else 'success-message' }}">{{ msg }}</div>
+            {% endfor %}
+            {% endwith %}
             {% if error %}
                 <div class="error-message">{{ error }}</div>
             {% endif %}
@@ -64,6 +69,7 @@
             {% if not step or step != 'verify' %}
             <!-- 1단계: 이메일 입력 및 OTP 요청 -->
             <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="action" value="send_otp">
                 <input type="hidden" name="method" value="email">
                 <div class="form-group">
@@ -75,9 +81,10 @@
             </form>
             
             <!-- 관리자 로그인 버튼 (로컬호스트 및 pythonanywhere) -->
-            {% if remote_addr == '127.0.0.1' or request.host.startswith('127.0.0.1') or request.host.startswith('localhost') or request.host.startswith('snowball.pythonanywhere.com') %}
+            {% if remote_addr == '127.0.0.1' or request.host.startswith('127.0.0.1') or request.host.startswith('localhost') or request.host.startswith('192.168.') or request.host.startswith('snowball.pythonanywhere.com') %}
             <div class="admin-login-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
                 <form method="POST" action="{{ url_for('login') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="action" value="admin_login">
                     <button type="submit" class="btn-outline" style="background-color: #28a745; color: white; border-color: #28a745;">
                         <i class="fas fa-shield-alt"></i> 관리자 로그인
@@ -97,6 +104,7 @@
                 {% endif %}
             </div>
             <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="action" value="verify_otp">
                 <div class="form-group">
                     <label for="otp_code">인증 코드:</label>

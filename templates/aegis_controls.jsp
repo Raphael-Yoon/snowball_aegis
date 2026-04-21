@@ -171,7 +171,14 @@
             <input type="text" class="form-control form-control-sm" id="mappingQuery" placeholder="기본 쿼리 대신 사용">
           </div>
           <div class="col-md-2">
-            <button class="btn btn-primary btn-sm w-100" onclick="addMapping()">
+            <label class="form-label small fw-semibold">모니터링 방식</label>
+            <select class="form-select form-select-sm" id="mappingMonitorMode">
+              <option value="automated">자동 (Automated)</option>
+              <option value="population">수동 (Population)</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary btn-sm w-100" onclick="addMapping()" style="margin-top:1.6rem;">
               <i class="fas fa-plus me-1"></i>연결
             </button>
           </div>
@@ -243,17 +250,37 @@ function loadMappings(controlId) {
     fetch(`/api/aegis/controls/${controlId}/systems`)
     .then(r => r.json())
     .then(data => {
-        const rows = (data.mappings || []).map(m => `
+        const rows = (data.mappings || []).map(m => {
+            const isAuto = (m.monitor_mode || 'automated') === 'automated';
+            return `
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                <div>
-                    <span class="badge bg-primary me-2">${m.system_code}</span>${m.system_name}
-                    ${m.custom_query ? '<small class="text-muted ms-2"><i class="fas fa-code"></i> 커스텀쿼리</small>' : ''}
-                    <small class="text-muted ms-2">허용 예외: ${m.threshold_count}건</small>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge bg-primary">${m.system_code}</span>
+                    <span>${m.system_name}</span>
+                    ${m.custom_query ? '<small class="text-muted"><i class="fas fa-code"></i> 커스텀쿼리</small>' : ''}
+                    <small class="text-muted">허용 예외: ${m.threshold_count}건</small>
                 </div>
-                <button class="btn btn-outline-danger btn-sm" onclick="removeMapping(${m.mapping_id})">
-                    <i class="fas fa-unlink"></i>
-                </button>
-            </div>`).join('');
+                <div class="d-flex align-items-center gap-2">
+                    <div class="btn-group btn-group-sm" role="group" title="모니터링 방식">
+                        <button type="button"
+                            class="btn ${isAuto ? 'btn-success' : 'btn-outline-success'}"
+                            onclick="setMonitorMode(${m.mapping_id}, 'automated', this)"
+                            title="자동(Automated): 쿼리 결과로 통제 수행 여부 직접 판단">
+                            <i class="fas fa-robot me-1"></i>자동
+                        </button>
+                        <button type="button"
+                            class="btn ${!isAuto ? 'btn-warning text-dark' : 'btn-outline-warning text-dark'}"
+                            onclick="setMonitorMode(${m.mapping_id}, 'population', this)"
+                            title="수동(Population): 모집단 수집 후 항목별 증빙 매핑">
+                            <i class="fas fa-users me-1"></i>수동
+                        </button>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm" onclick="removeMapping(${m.mapping_id})" title="매핑 해제">
+                        <i class="fas fa-unlink"></i>
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
         document.getElementById('currentMappings').innerHTML =
             `<h6 class="fw-semibold mb-2">현재 연결된 시스템</h6>${rows || '<p class="text-muted">연결된 시스템 없음</p>'}`;
     });
@@ -266,10 +293,44 @@ function addMapping() {
         system_id: parseInt(document.getElementById('mappingSystemId').value),
         custom_query: document.getElementById('mappingQuery').value,
         threshold_count: parseInt(document.getElementById('mappingThreshold').value) || 0,
+        monitor_mode: document.getElementById('mappingMonitorMode').value,
     };
     fetch('/api/aegis/mappings', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(r => r.json())
     .then(data => { alert(data.message); if (data.success) loadMappings(controlId); });
+}
+
+function setMonitorMode(mappingId, mode, btnEl) {
+    fetch(`/api/aegis/mappings/${mappingId}/monitor-mode`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ monitor_mode: mode })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            // 버튼 그룹 내 active 상태 갱신
+            const group = btnEl.closest('.btn-group');
+            group.querySelectorAll('button').forEach(btn => {
+                const isAuto = btn.textContent.trim().startsWith('\uc790\ub3d9') || btn.querySelector('.fa-robot');
+                if (mode === 'automated') {
+                    if (btn === btnEl) {
+                        btn.className = 'btn btn-success btn-sm';
+                    } else {
+                        btn.className = 'btn btn-outline-warning text-dark btn-sm';
+                    }
+                } else {
+                    if (btn === btnEl) {
+                        btn.className = 'btn btn-warning text-dark btn-sm';
+                    } else {
+                        btn.className = 'btn btn-outline-success btn-sm';
+                    }
+                }
+            });
+        } else {
+            alert(data.message);
+        }
+    });
 }
 
 function removeMapping(mappingId) {

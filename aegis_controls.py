@@ -156,18 +156,22 @@ def api_mapping_create():
             (control_id, system_id)
         ).fetchone()
 
+        monitor_mode = data.get('monitor_mode', 'automated')
+        if monitor_mode not in ('automated', 'population'):
+            monitor_mode = 'automated'
+
         if existing:
             if dict(existing)['is_active'] == 'Y':
                 return jsonify({'success': False, 'message': '이미 매핑된 통제-시스템입니다.'}), 400
             conn.execute(
-                'UPDATE aegis_control_system SET is_active = ?, custom_query = ?, threshold_count = ? WHERE mapping_id = ?',
-                ('Y', data.get('custom_query', ''), data.get('threshold_count', 0), dict(existing)['mapping_id'])
+                'UPDATE aegis_control_system SET is_active = ?, custom_query = ?, threshold_count = ?, monitor_mode = ? WHERE mapping_id = ?',
+                ('Y', data.get('custom_query', ''), data.get('threshold_count', 0), monitor_mode, dict(existing)['mapping_id'])
             )
         else:
             conn.execute('''
-                INSERT INTO aegis_control_system (control_id, system_id, custom_query, threshold_count, is_active)
-                VALUES (?, ?, ?, ?, 'Y')
-            ''', (control_id, system_id, data.get('custom_query', ''), data.get('threshold_count', 0)))
+                INSERT INTO aegis_control_system (control_id, system_id, custom_query, threshold_count, is_active, monitor_mode)
+                VALUES (?, ?, ?, ?, 'Y', ?)
+            ''', (control_id, system_id, data.get('custom_query', ''), data.get('threshold_count', 0), monitor_mode))
         conn.commit()
 
     return jsonify({'success': True, 'message': '통제-시스템 매핑이 완료되었습니다.'})
@@ -183,3 +187,30 @@ def api_mapping_delete(mapping_id):
         )
         conn.commit()
     return jsonify({'success': True, 'message': '매핑이 해제되었습니다.'})
+
+
+@bp_aegis_controls.route('/api/aegis/mappings/<int:mapping_id>/monitor-mode', methods=['PATCH'])
+@login_required
+def api_mapping_monitor_mode(mapping_id):
+    """매핑별 모니터링 방식(automated/population) 변경"""
+    data = request.get_json()
+    mode = data.get('monitor_mode')
+    if mode not in ('automated', 'population'):
+        return jsonify({'success': False, 'message': "monitor_mode는 'automated' 또는 'population'이어야 합니다."}), 400
+
+    with get_db() as conn:
+        existing = conn.execute(
+            'SELECT mapping_id FROM aegis_control_system WHERE mapping_id = ? AND is_active = ?',
+            (mapping_id, 'Y')
+        ).fetchone()
+        if not existing:
+            return jsonify({'success': False, 'message': '매핑을 찾을 수 없습니다.'}), 404
+
+        conn.execute(
+            'UPDATE aegis_control_system SET monitor_mode = ? WHERE mapping_id = ?',
+            (mode, mapping_id)
+        )
+        conn.commit()
+
+    label = '자동(Automated)' if mode == 'automated' else '수동(Population)'
+    return jsonify({'success': True, 'message': f'모니터링 방식이 {label}으로 변경되었습니다.', 'monitor_mode': mode})
